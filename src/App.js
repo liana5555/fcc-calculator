@@ -1,17 +1,26 @@
 import React from 'react';
 import './App.css';
 import Elements from './Elements';
-import { evaluate } from 'mathjs'
+import { evaluate } from 'mathjs';
+import { checkForMultipleDot } from './test-regex';
 
 
 
 function App() {
 
   const [display, setDisplay] = React.useState("0");
-  const [result, setResult] = React.useState(0);
 
   let result_2 = 0;
 
+
+  /*
+    Handling  clicking the elements
+
+    If there wasn't anything or 0 on the display previously it just sets display to whatever was clicked
+
+    If there was something on the display concats the clicked values to the display
+  
+  */
 
   function handleClick(value) {
     console.log("You clicked this number" + value)
@@ -23,6 +32,12 @@ function App() {
     }
 
   }
+
+  /*
+  
+    Handling the cases when the operators are pressed multiple times after each other. 
+  
+  */
 
 
   function multiple_operators_handling(s2) {
@@ -56,7 +71,7 @@ function App() {
     else if (value === ".") {
       if (display[display.length - 1] === (".")) {
         console.log("This is wrong")
-        //alert("You can't write more than 1 '.' after each other.")
+        
       }
       else if (display[display.length - 2] === (".")) {
         //there is still a bug because it shouldn't work anytime it actually contains a . already.
@@ -67,36 +82,43 @@ function App() {
         setDisplay(prev => prev + value)
       }
 
-
     }
     else if (value === "=") {
-      console.log(display)
-      
 
 
-      console.log(evaluate(display))
-      let res = evaluate(display)
+      let split = display.split(/[+\-\/*]/)
 
+      let chckForMultipleDots = checkForMultipleDot(split)
 
-      if (result === 0) {
-        console.log("Does it work???")
-        /* setResult(prev => {
-           return (prev + res)
-         })*/
-        result_2 = result_2 + res;
+      console.log(chckForMultipleDots)
 
+      if (chckForMultipleDots === true) {
+        alert("Wrong too many dots")
+        setDisplay("ERR")
+        setTimeout(() => {
+          setDisplay("0");
+          result_2 = 0;
+        }, 2000)
       }
       else {
-        //setResult(res)
-        result_2 = res;
+        console.log(display)
+        console.log(evaluate(display))
+        let res = evaluate(display)
+
+        result_2 = result_2 + res;
+
+
+        //we need to set the result before this
+        setDisplay(prev => prev + value + result_2)
+
+        console.log(result_2)
+
+
+        setDisplay(result_2)
+
       }
 
-      //we need to set the result before this
-      setDisplay(prev => prev + value + result_2)
-      //setResult(prev => prev +/*kéne valami function*/(display))
-      console.log(result_2)
-      setDisplay(result_2)
-  
+
 
     }
     else {
@@ -120,16 +142,17 @@ function App() {
 
   }
 
-  const numbers = [{ id: "one", value: "1" }
-    , { id: "two", value: "2" },
-  { id: "three", value: "3" },
-  { id: "four", value: "4" },
-  { id: "five", value: "5" },
-  { id: "six", value: "6" },
-  { id: "seven", value: "7" },
-  { id: "eight", value: "8" },
-  { id: "nine", value: "9" },
-  { id: "zero", value: "0" }]
+  const numbers = [
+    { id: "one", value: "1" },
+    { id: "two", value: "2" },
+    { id: "three", value: "3" },
+    { id: "four", value: "4" },
+    { id: "five", value: "5" },
+    { id: "six", value: "6" },
+    { id: "seven", value: "7" },
+    { id: "eight", value: "8" },
+    { id: "nine", value: "9" },
+    { id: "zero", value: "0" }]
   const operators = [
     { id: "equals", value: "=" },
     { id: "decimal", value: "." },
