@@ -1,0 +1,114 @@
+#display {
+  background-color: hsl(17, 100%, 94%);
+  grid-area: display;
+  width: 100%;
+  height: 50px;
+  border-radius: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+#one {
+  grid-area: one;
+}
+
+#two {
+  grid-area: two;
+}
+
+#three {
+  grid-area: three;
+}
+
+#four {
+  grid-area: four;
+}
+
+#five {
+  grid-area: five;
+}
+
+#six {
+  grid-area: six;
+}
+
+#seven {
+  grid-area: seven;
+}
+
+#eight {
+  grid-area: eight;
+}
+
+#nine {
+  grid-area: nine;
+}
+
+#zero {
+  grid-area: null;
+  width: 120px;
+}
+
+#equals{
+  grid-area: equal;
+  height: 120px;
+  
+
+}
+#decimal {
+  grid-area: dec;
+}
+#clear {
+  grid-area: clear;
+  width: 120px;
+}
+#add {
+  grid-area: add;
+}
+#subtract {
+  grid-area: subtract;
+}
+#multiply {
+  grid-area: multiply;
+}
+#divide {
+  grid-area: divide;
+}
+
+
+main {
+  display: grid;
+  grid-template-areas: "display display display display"
+                      "clear clear divide multiply"
+                      "seven eight nine subtract"
+                      "four five six add"
+                      "one two three equal"
+                      "null null dec equal";
+  gap: 20px;
+  /* grid area */
+
+
+}
+
+.numbers {
+  width: 50px;
+  height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: beige;
+  border-radius: 5px;
+}
+
+.operators {
+  width: 50px;
+  height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color:bisque;
+  border-radius: 5px;
+
+}
+
