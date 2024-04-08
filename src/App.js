@@ -2,7 +2,7 @@ import React from 'react';
 import './App.css';
 import Elements from './Elements';
 import { evaluate } from 'mathjs';
-import { checkForMultipleDot } from './test-regex';
+import { checkForMultipleDot, multiple_operators_handling } from './usedFunctions';
 
 
 
@@ -12,6 +12,15 @@ function App() {
 
   let result_2 = 0;
 
+
+  function errrHandling() {
+    setDisplay("ERR")
+    setTimeout(() => {
+      setDisplay("0");
+      result_2 = 0;
+    }, 2000)
+
+  }
 
   /*
     Handling  clicking the elements
@@ -33,110 +42,93 @@ function App() {
 
   }
 
+
   /*
-  
-    Handling the cases when the operators are pressed multiple times after each other. 
+    Handling  clicking the operators
   
   */
 
 
-  function multiple_operators_handling(s2) {
-
-    let len = s2.length
-    console.log(len)
-
-    let lenght_to_slice_to = len;
-
-
-    for (let i = len - 1; i > 0; i--) {
-      if (s2[i] === "+" || s2[i] === "-" || s2[i] === "*" || s2[i] === "/") {
-        if (s2[i - 1] === "+" || s2[i - 1] === "-" || s2[i - 1] === "*" || s2[i - 1] === "/") {
-          lenght_to_slice_to = i - 1;
-        }
-
-      }
-
-    }
-    return lenght_to_slice_to
-
-  }
-
-
   function handleClickOperators(value) {
     console.log("You clicked this operator" + value)
-    if (value === "AC") {
-      setDisplay("0")
-      result_2 = 0
-    }
-    else if (value === ".") {
-      if (display[display.length - 1] === (".")) {
-        console.log("This is wrong")
-        
-      }
-      else if (display[display.length - 2] === (".")) {
-        //there is still a bug because it shouldn't work anytime it actually contains a . already.
+    switch (value) {
+      case "AC":
+        //resetting the display
+        setDisplay("0");
+        result_2 = 0;
+        break;
+      case ".":
+        //Only settig the display when the previous and the one before that is not "."
+        if (display[display.length - 1] === (".")) {
+          console.log("This is wrong")
 
-
-      }
-      else {
-        setDisplay(prev => prev + value)
-      }
-
-    }
-    else if (value === "=") {
-
-
-      let split = display.split(/[+\-\/*]/)
-
-      let chckForMultipleDots = checkForMultipleDot(split)
-
-      console.log(chckForMultipleDots)
-
-      if (chckForMultipleDots === true) {
-        alert("Wrong too many dots")
-        setDisplay("ERR")
-        setTimeout(() => {
-          setDisplay("0");
-          result_2 = 0;
-        }, 2000)
-      }
-      else {
-        console.log(display)
-        console.log(evaluate(display))
-        let res = evaluate(display)
-
-        result_2 = result_2 + res;
-
-
-        //we need to set the result before this
-        setDisplay(prev => prev + value + result_2)
-
-        console.log(result_2)
-
-
-        setDisplay(result_2)
-
-      }
-
-
-
-    }
-    else {
-
-      if (display[display.length - 1] === "+" || display[display.length - 1] === "-" || display[display.length - 1] === "/" || display[display.length - 1] === "*") {
-        let slice_to = multiple_operators_handling(display)
-        //I should do one for minus on its own  slice_to here should be multiple_operators_handling(display)-1 an in the minus it should be withput -1
-
-        if ((display[display.length - 1] === "/" && value === "/") || (display[display.length - 1] === "*" && value === "*")) {
-          slice_to = multiple_operators_handling(display) - 1
         }
-        setDisplay(prev => prev.slice(0, slice_to) + value)
-      }
-      else {
-        setDisplay(prev => prev + value)
-      }
+        else if (display[display.length - 2] === (".")) {
+        }
+        else {
+          setDisplay(prev => prev + value)
+        }
+        break;
+      case "=":
+        //Checking for multiple dots in the expression.
+        // If there is multiple dots --> error
+        //if there isn't setting the display to the result of the expression
+        try {
+          let split = display.split(/[+\-\/*]/)
+
+          let chckForMultipleDots = checkForMultipleDot(split)
+
+          console.log(chckForMultipleDots)
+
+          if (chckForMultipleDots === true) {
+            //alert("Wrong too many dots")
+            errrHandling();
+          }
+          else {
+            console.log(display)
+            console.log(evaluate(display))
+            let res = evaluate(display)
+
+            result_2 = result_2 + res;
 
 
+            //we need to set the result before this
+            //setDisplay(prev => prev + value + result_2)
+
+            console.log(result_2)
+
+
+            setDisplay(result_2)
+
+          }
+
+        }
+        catch (err) {
+          console.log(err)
+        }
+
+        break;
+      case "+":
+      case "-":
+      case "/":
+      case "*":
+        if (display[display.length - 1] === "+" ||
+           display[display.length - 1] === "-" || 
+           display[display.length - 1] === "/" || 
+           display[display.length - 1] === "*") {
+          let slice_to = multiple_operators_handling(display)
+
+          if ((display[display.length - 1] === "/" && value === "/") 
+            || (display[display.length - 1] === "*" && value === "*")) {
+            slice_to = multiple_operators_handling(display) - 1
+          }
+          setDisplay(prev => prev.slice(0, slice_to) + value)
+        }
+        else {
+          setDisplay(prev => prev + value)
+        }
+
+        break;
 
     }
 
@@ -163,6 +155,12 @@ function App() {
     { id: "clear", value: "AC" }
 
   ]
+
+  /*
+
+  Creating the calculator numbers and operators using components. 
+  
+  */
 
   const numbers_jsx = numbers.map(number => <Elements key={number.id} class="numbers" id={number.id} value={number.value} handleClick={handleClick} />)
 
