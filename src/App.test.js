@@ -1,8 +1,16 @@
 import { render, screen } from '@testing-library/react';
 import App from './App';
 
-test('renders learn react link', () => {
+test('Checking the number of numbers', () => {
   render(<App />);
-  const linkElement = screen.getByText(/learn react/i);
-  expect(linkElement).toBeInTheDocument();
+  const numbers = screen.getAllByRole('numbers');
+  console.log(numbers)
+  expect(numbers).toHaveLength(10)
+});
+
+test('Checking the number of operators', () => {
+  render(<App />);
+  const operators = screen.getAllByRole('operators');
+  console.log(operators)
+  expect(operators).toHaveLength(7)
 });
